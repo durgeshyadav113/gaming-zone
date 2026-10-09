@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Fists of Fury</title>
+
+    <script>
+        window.contestEnabled = false;
+        window.qualifyingScore = 8000;
+        window.current_version = 0;
+        window.contest_name = "SUMMER CONTEST";
+        window.special_contest = false;
+    </script>
+
+    <!--http://www.html5rocks.com/en/mobile/mobifying/-->
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1, minimum-scale=1,maximum-scale=1" />
+
+    <!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- force webkit on 360 -->
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <!-- force edge on IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- force full screen on some browser -->
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+
+    <!-- force screen orientation on some browser -->
+    <meta name="screen-orientation" content="landscape" />
+    <meta name="x5-orientation" content="landscape">
+
+    <!--fix fireball/issues/3568 -->
+    <!--<meta name="browsermode" content="application">-->
+    <meta name="x5-page-mode" content="app">
+
+    <!--<link rel="apple-touch-icon" href=".png" />-->
+    <!--<link rel="apple-touch-icon-precomposed" href=".png" />-->
+
+    <link rel="stylesheet" type="text/css" href="style-mobile.css" />
+    <link rel="icon" href="favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" href="xsdk/base.css"/>
+    <link rel="stylesheet" type="text/css" href="xsdk/notifiers.css"/>
+    <script src="xsdk/config.js"></script>
+    <script>
+      {
+        let s = window.location.search;
+        let s1 = s && new URLSearchParams(s).get('adtypes');
+        if (!s1 || s1.includes('afg')) {
+          const script = document.createElement('script');
+          script.async = true;
+          script.setAttribute('data-ad-frequency-hint', '30s');
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1073974549108533';
+          script.crossOrigin = 'anonymous';
+          script.onload = () => {
+            window.afgScriptLoaded = true;
+          };
+          document.head.appendChild(script);
+        }
+      }
+    </script>
+</head>
+
+<body>
+
+<script src="xsdk/spinner.js"></script>
+<script src="xsdk/xsdk-pt.min.js"></script>
+<div id="my-loading-overlay" class="my-loading-overlay" style="display: none">
+    <div id="my-loading" class="my-loading"><span id="my-loading-text" class="title"></span></div>
+</div>
+<div id="my-toast" class="my-toast hidden"></div>
+
+    <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
+    <div id="splash">
+        <span id="loading-text"></span>
+        <div class="progress-bar stripes">
+            <span style="width: 0%"></span>
+        </div>
+    </div>
+    <script>
+      window.xSDK.init(xSDKConf);
+      let interval1;
+      {
+        let arr = [
+          'Tap the left or right side of the screen to attack.',
+          'Tap the opposite side to dodge.',
+          'After every round, choose a power-up to beat the bad guys.',
+        ];
+        let e = document.getElementById('loading-text');
+        e.textContent = 'This game takes a while to start up the first time.';
+        let bar = document.getElementById('splash').querySelector('.progress-bar span');
+        setTimeout(function() {
+          bar.style.width = '100%';
+        }, 1000);
+        let i = 0;
+        interval1 = setInterval(function() {
+          if (i >= arr.length) i = 0;
+          e.textContent = arr[i++];
+          bar.classList.add('reset');
+          bar.style.width = '0%';
+          setTimeout(function() {
+            bar.classList.remove('reset');
+            bar.style.width = '100%';
+          }, 1000);
+        }, 6000);
+      }
+    </script>
+
+    <script src="waveData.js" charset="utf-8"></script>
+
+    <script src="src/settings.js" charset="utf-8"></script>
+
+    <script src="main.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+        (function() {
+            // open web debugger console
+            if (typeof VConsole !== 'undefined') {
+                window.vConsole = new VConsole();
+            }
+
+            var debug = window._CCSettings.debug;
+            var splash = document.getElementById('splash');
+            splash.style.display = 'block';
+
+            function loadScript(moduleName, cb) {
+                function scriptLoaded() {
+                    document.body.removeChild(domScript);
+                    domScript.removeEventListener('load', scriptLoaded, false);
+                    cb && cb();
+                };
+                var domScript = document.createElement('script');
+                domScript.async = true;
+                domScript.src = moduleName;
+                domScript.addEventListener('load', scriptLoaded, false);
+                document.body.appendChild(domScript);
+            }
+
+            loadScript(debug ? 'cocos2d-js.js' : 'cocos2d-js-min.js', function() {
+                if (CC_PHYSICS_BUILTIN || CC_PHYSICS_CANNON) {
+                    loadScript(debug ? 'physics.js' : 'physics-min.js', window.boot);
+                } else {
+                    window.boot();
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
